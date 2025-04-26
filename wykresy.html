@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Rysuj wykres</title>
+	<link rel="stylesheet" href="css/style.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.1/math.min.js"></script>
+</head>
+
+<body>
+	<header>
+		<h1>Rysowanie funkcji</h1>
+		<nav>
+			<a href="index.html">Strona główna</a>
+			<a href="wykresy.html">Rysuj wykres</a>
+			<a href="historia.php">Historia</a>
+		</nav>
+	</header>
+
+	<main>
+		<section>
+			<input type="text" id="functionInput" placeholder="Wpisz funkcję, np. sin(x)" />
+			<button onclick="drawGraph()">Rysuj</button>
+			<canvas id="graphCanvas" width="600" height="400"></canvas>
+		</section>
+	</main>
+
+	<script src="js/app.js"></script>
+</body>
+
+</html>

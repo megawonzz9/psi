@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Graficzny Kalkulator Funkcji</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+	<header>
+		<h1>Graficzny Kalkulator Funkcji</h1>
+		<nav>
+			<a href="index.html">Strona główna</a>
+			<a href="wykresy.html">Rysuj wykres</a>
+			<a href="historia.php">Historia</a>
+		</nav>
+	</header>
+
+	<main>
+		<section>
+			<h2>Witaj!</h2>
+			<p>Wpisuj funkcje, rysuj wykresy, zapisuj do historii i zmieniaj motyw.</p>
+		</section>
+
+		<section>
+			<form method="post" action="php/backend.php">
+				<label for="funkcja">Zapisz funkcję do historii:</label>
+				<input type="text" name="funkcja" required />
+				<button type="submit">Zapisz</button>
+			</form>
+		</section>
+
+		<section>
+			<label for="theme">Motyw:</label>
+			<select id="theme" onchange="setTheme(this.value)">
+				<option value="light">Jasny</option>
+				<option value="dark">Ciemny</option>
+			</select>
+		</section>
+	</main>
+
+	<footer>
+		<p>&copy; 2025 Graficzny Kalkulator</p>
+	</footer>
+
+	<script>
+		function setTheme(mode) {
+			document.cookie = "theme=" + mode + ";path=/";
+			document.body.className = mode;
+		}
+		window.onload = () => {
+			const cookies = document.cookie.split(';');
+			for (let cookie of cookies) {
+				const [name, value] = cookie.trim().split('=');
+				if (name === 'theme') {
+					document.body.className = value;
+					document.getElementById('theme').value = value;
+				}
+			}
+		}
+	</script>
+</body>
+
+</html>
