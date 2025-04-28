@@ -1,14 +1,63 @@
 const canvas = document.getElementById("graphCanvas");
 const ctx = canvas.getContext("2d");
-const width = canvas.width;
-const height = canvas.height;
-const scale = 40;
-const centerX = width / 2;
-const centerY = height / 2;
+let width = canvas.width;
+let height = canvas.height;
+let scale = 40;
+let centerX = width / 2;
+let centerY = height / 2;
+
+function drawGrid() {
+  ctx.strokeStyle = "#eee";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+
+  const pixelsPerUnit = scale;
+  const niceSteps = [1, 2, 5];
+  let logicalStep = Math.pow(10, Math.floor(Math.log10(100 / pixelsPerUnit)));
+  if (logicalStep < 0.01) {
+    logicalStep = 0.01;
+  }
+
+  let bestStep = logicalStep;
+  for (let i = 0; i < niceSteps.length; i++) {
+    if (pixelsPerUnit * logicalStep * niceSteps[i] >= 40) { // min. 40px między liniami
+      bestStep = logicalStep * niceSteps[i];
+      break;
+    }
+  }
+
+  const stepPx = bestStep * pixelsPerUnit;
+
+  for (let x = centerX % stepPx; x <= width; x += stepPx) {
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, height);
+  }
+
+  for (let y = centerY % stepPx; y <= height; y += stepPx) {
+    ctx.moveTo(0, y);
+    ctx.lineTo(width, y);
+  }
+
+  ctx.stroke();
+
+  // Numerki
+  ctx.fillStyle = "#000";
+  ctx.font = "10px Arial";
+
+  for (let x = centerX % stepPx; x <= width; x += stepPx) {
+    let value = ((x - centerX) / pixelsPerUnit).toFixed(2);
+    ctx.fillText(value, x + 2, centerY + 12);
+  }
+
+  for (let y = centerY % stepPx; y <= height; y += stepPx) {
+    let value = ((centerY - y) / pixelsPerUnit).toFixed(2);
+    ctx.fillText(value, centerX + 2, y - 2);
+  }
+}
 
 function drawAxes() {
   ctx.strokeStyle = "#aaa";
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(0, centerY);
   ctx.lineTo(width, centerY);
@@ -27,9 +76,10 @@ function drawGraph() {
     return;
   }
 
-  document.cookie = "lastFunc=" + input + ";path=/";
+  document.cookie = "lastFunc=" + encodeURIComponent(input) + ";path=/";
 
   ctx.clearRect(0, 0, width, height);
+  drawGrid();
   drawAxes();
 
   ctx.beginPath();
@@ -37,7 +87,7 @@ function drawGraph() {
   ctx.lineWidth = 2;
 
   let first = true;
-  for (let x = -width / 2; x < width / 2; x++) {
+  for (let x = -centerX; x < width - centerX; x++) {
     const graphX = x / scale;
     let graphY;
     try {
@@ -69,7 +119,36 @@ function loadLastFunc() {
   }
 }
 
+// Zoomowanie scroll kółkiem
+canvas.addEventListener('wheel', function(event) {
+  event.preventDefault();
+  if (event.deltaY < 0) {
+    scale *= 1.1;
+  } else {
+    scale /= 1.1;
+  }
+  drawGraph();
+});
+
+// Obsługa zmiany rozmiaru okna
+window.addEventListener('resize', function() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  width = canvas.width;
+  height = canvas.height;
+  centerX = width / 2;
+  centerY = height / 2;
+  drawGraph();
+});
+
 window.onload = () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  width = canvas.width;
+  height = canvas.height;
+  centerX = width / 2;
+  centerY = height / 2;
+  drawGrid();
   drawAxes();
   loadLastFunc();
 };

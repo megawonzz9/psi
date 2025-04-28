@@ -22,11 +22,19 @@
 		<section>
 			<input type="text" id="functionInput" placeholder="Wpisz funkcję, np. sin(x)" />
 			<button onclick="drawGraph()">Rysuj</button>
-			<canvas id="graphCanvas" width="1000" height="800"></canvas>
+			<canvas id="graphCanvas"></canvas>
 		</section>
 	</main>
 
 	<script src="js/app.js"></script>
 </body>
+<style>
+	#graphCanvas {
+		width: calc(98vw);
+		height: calc(100vh - 100px);
+		display: block;
+		/* żeby nie było marginesów */
+	}
+</style>
 
 </html>
